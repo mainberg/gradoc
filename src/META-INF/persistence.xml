@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+	<persistence-unit name="gradoc" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<non-jta-data-source>java:comp/env/jdbc/gradocDb</non-jta-data-source>
+		<class>de.jotwerk.gradoc.model.Item</class>
+		<class>de.jotwerk.gradoc.model.Holding</class>
+		<class>de.jotwerk.gradoc.model.Artifact</class>
+		<class>de.jotwerk.gradoc.model.Finding</class>
+		<class>de.jotwerk.gradoc.model.Account</class>
+		<class>de.jotwerk.gradoc.model.Campaign</class>
+		<class>de.jotwerk.gradoc.model.Role</class>
+		<class>de.jotwerk.gradoc.model.Descriptor</class>
+		<class>de.jotwerk.gradoc.model.Discovery</class>
+		<class>de.jotwerk.gradoc.model.Geometry</class>		
+		<class>de.jotwerk.gradoc.model.Location</class>
+		<class>de.jotwerk.gradoc.model.Photo</class>		
+		<class>de.jotwerk.gradoc.model.Pile</class>
+		<class>de.jotwerk.gradoc.model.Plank</class>
+		<class>de.jotwerk.gradoc.model.Protocol</class>		
+		<class>de.jotwerk.gradoc.model.Sediment</class>
+		<class>de.jotwerk.gradoc.model.Task</class>
+		<properties>
+			<!-- property name="eclipselink.ddl-generation" value="create-or-extend-tables" / -->
+			<property name="eclipselink.logging.level" value="SEVERE" />
+		</properties>
+	</persistence-unit>
+</persistence>
