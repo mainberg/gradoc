@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<cc:interface>
+		<cc:attribute name="label" default="Fläche"/>
+		<cc:attribute name="title" default="Bitte wählen Sie ggf. eine Fläche aus."/>
+		<cc:attribute name="mgr" required="true"/>
+	</cc:interface>
+	<cc:implementation>		
+		<div>
+			<h:outputLabel for="location" value="#{cc.attrs.label}" title="#{cc.attrs.title}" styleClass="label"/>
+			<h:selectOneMenu id="location" value="#{cc.attrs.mgr.curItem.location}" styleClass="entry selectDescriptor" converter="#{locationMgr}">
+				<f:selectItem itemLabel="_" noSelectionOption="true"/>								
+				<f:selectItems value="#{locationMgr.items}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>
+			</h:selectOneMenu>
+			<h:message for="location" />
+		</div>
+	</cc:implementation>
+</ui:composition>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+    
+    <ui:composition template="/resources/gradoc.xhtml">
+		
+			<ui:define name="metadata">
+				<f:metadata>
+					<f:viewParam name="id" value="#{plankMgr.id}" />
+					<f:viewAction action="#{plankMgr.load}"/>
+				</f:metadata>				
+			</ui:define>
+			
+			<ui:define name="styles">
+				<style type="text/css">
+					.nameColumn { width: 100px; }
+					.categoryColumn { width: 100px; }
+					.barkColumn { width: 20px; }
+					.burningColumn { width: 20px; }
+					.diameterColumn { width: 20px; }
+					.kindColumn { width: 30px; }
+					.sampleColumn { width: 50px; }
+				</style>
+			</ui:define>
+			
+			<ui:define name="title">
+				#{msgs.plank_title}
+			</ui:define>
+		
+			<ui:define name="records">
+						
+				<h:dataTable id="items" value="#{plankMgr.items}" var="item" frame="border" rules="cols" headerClass="caption" styleClass="records" 
+				columnClasses="editColumn,nameColumn,categoryColumn,barkColumn,burningColumn,diameterColumn,kindColumn,sampleColumn,noteColumn">					
+					<h:column>
+						<f:facet name="header">
+							&#160;
+						</f:facet>
+						<h:button outcome="plank" image="/img/edit.gif"><f:param name="id" value="#{item.id}" /></h:button>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_name_header}" />
+						</f:facet>
+						<h:outputText value="#{item.name}"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_descriptor_header}" />
+						</f:facet>
+						<h:outputText value="#{item.descriptor.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Kontext" />
+						</f:facet>
+						<h:outputText value="#{item.context.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.wood_bark_header}" />
+						</f:facet>
+						<h:outputText value="#{item.bark}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_burning_header}" />
+						</f:facet>
+						<h:outputText value="#{item.burning}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.wood_diameter_header}"  escape="false"/>
+						</f:facet>
+						<h:outputText value="#{item.diameter}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.wood_kind_header}" escape="false" />
+						</f:facet>
+						<h:outputText value="#{item.kind}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_x_header_start}" />
+						</f:facet>
+						<h:outputText value="#{item.x}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_y_header_start}" />
+						</f:facet>
+						<h:outputText value="#{item.y}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_z_header_start}" />
+						</f:facet>
+						<h:outputText value="#{item.z}" />
+					</h:column>	
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_x_header_end}" />
+						</f:facet>
+						<h:outputText value="#{item.x1}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_y_header_end}" />
+						</f:facet>
+						<h:outputText value="#{item.y1}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_z_header_end}" />
+						</f:facet>
+						<h:outputText value="#{item.z1}" />
+					</h:column>				
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.wood_sample_header}" />
+						</f:facet>
+						<h:outputText value="#{item.sample}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.plank_note_header}" />
+						</f:facet>
+						<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+					</h:column>					
+				</h:dataTable>
+				
+				<h:form>
+					<fieldset>				
+						<legend>Export von L-Hölzern</legend>
+						<h:outputLabel for="exportFormat" value="Exportformat" />&#160;
+						<h:selectOneMenu id="exportFormat" value="#{plankMgr.exportFormat}" styleClass="selectDescriptor" >&#160;
+							<f:selectItem itemValue="plank/standard.xsl" itemLabel="Standard" />
+							<f:selectItem itemValue="plank/csv.xsl" itemLabel="CSV" />
+							<f:selectItem itemValue="plank/adl.xsl" itemLabel="ADL" />
+						</h:selectOneMenu>
+						<h:commandButton action="#{plankMgr.export}" value="Export"/>
+					</fieldset>
+				</h:form>
+				
+				<p>
+				<h:outputLink value="http://jotwerk.de:8080/reports/frameset">
+					Report
+					<f:param name="__report" value="plank.rptdesign" />
+					<f:param name="__format" value="pdf" />
+					<f:param name="task" value="#{login.task.id}" />
+					<f:param name="camp" value="#{login.campaign.name}" />
+					<f:param name="RP_x" value="#{login.location.x}" />
+					<f:param name="RP_y" value="#{login.location.y}" />
+					<f:param name="RP_breite" value="#{login.location.a}" />
+					<f:param name="RP_hoehe" value="#{login.location.b}" />
+				</h:outputLink>
+			</p>
+				
+				<script type="text/javascript" charset="utf-8">
+																				
+				var uwarc = {}; // namespace (not required)
+					
+				uwarc.strokeStyles = {"_" : "#000", "W" : "#ff0", "Wr" : "#f00", "Wb" : "#0f0", "W?" : "00f"};
+				uwarc.fillStyles = {"_" : "#ffffff", "Ei" : "#808080", "Wh" : "#FFFF80", "K" : "#FF8080"};
+		
+				function renderPile(nummer, rinde, durchmesser, holzart, querschnitt, winkel, xkor, ykor) {
+					
+					var canvas = document.getElementById("plan");
+					var context = canvas.getContext("2d");
+					context.strokeStyle = uwarc.strokeStyles[rinde];
+					context.fillStyle = uwarc.fillStyles[holzart];
+					context.lineWidth = 3;
+					context.beginPath();
+					var x, y;
+					var radius = (500 / #{login.location.a}) * (durchmesser / 100) / 2;
+					context.save();					
+					
+					/* context.translate(50 * xkorZahl, 50 * ykorZahl); */
+					
+					var xposition = (xkor * 500) / #{login.location.a};
+					var yposition = (ykor * 500) / #{login.location.b};
+									
+					context.translate(xposition, 500 - yposition);
+					
+					/* context.translate(xInQuadrat, yInQuadrat);  */
+					context.save();
+					switch (querschnitt) {
+						case "A":					
+							context.arc(0, 0, radius, 0, 2*Math.PI, true);
+							break;
+						case "B":
+							context.rotate(Math.PI + Math.PI/6 * winkel);
+							context.arc(0, 0.5 * radius, radius, 0, Math.PI, true);
+							break;
+						case "C":
+							context.rotate(Math.PI * 0.75 + (Math.PI/6 * winkel));
+							context.moveTo(-radius, radius);
+							context.arc(-radius, radius, 2 * radius, 0, 1.5 * Math.PI, true);
+							break;
+						case "D":
+							var sqrthalbe = Math.sqrt(0.5) * radius;
+							context.moveTo(-radius, 0);
+							context.lineTo(-sqrthalbe, -sqrthalbe);
+							context.lineTo(0, -radius);
+							context.lineTo(sqrthalbe, -sqrthalbe);
+							context.lineTo(radius, 0);
+							context.lineTo(sqrthalbe, sqrthalbe);
+							context.lineTo(0, radius);
+							context.lineTo(-sqrthalbe, sqrthalbe);
+					}
+									
+					context.closePath();
+					context.stroke();
+					context.fill();
+					context.restore();
+					context.font = "8pt sans-serif";
+					context.textAlign = "center"
+					context.textBaseline = "middle";
+					context.fillStyle = "#00f";
+					context.fillText(nummer, 5, 5);
+					context.restore();
+					
+				}
+				
+				function renderPlank(nummer, rinde, durchmesser, holzart, xkor, ykor, xkor1, ykor1) {
+					
+					var canvas = document.getElementById("plan");
+					var context = canvas.getContext("2d");
+					context.strokeStyle = uwarc.strokeStyles[rinde];
+					context.fillStyle = uwarc.fillStyles[holzart];
+					context.lineWidth = durchmesser / #{login.location.a};
+										
+					/* context.translate(50 * xkorZahl, 50 * ykorZahl); */
+					
+					var xposition = (xkor * 500) / #{login.location.a};
+					var yposition = 500 - ((ykor * 500) / #{login.location.b});
+					var xposition1 = (xkor1 * 500) / #{login.location.a};
+					var yposition1 = 500 - ((ykor1 * 500) / #{login.location.b});
+														
+					context.beginPath();
+					context.moveTo(xposition,  yposition);
+					context.lineTo(xposition1, yposition1);
+					context.fill();
+					context.stroke();
+										
+					context.font = "8pt sans-serif";
+					context.textAlign = "center"
+					context.textBaseline = "middle";
+					context.fillStyle = "#00f";
+					context.fillText(nummer, (xposition + xposition1) / 2 , (yposition + yposition1) / 2);
+					context.restore();
+					
+				}
+				
+				function renderFinding(nummer, xkor, ykor) {
+									
+					var canvas = document.getElementById("plan");
+					var context = canvas.getContext("2d");
+					context.strokeStyle = "#f00";
+					context.fillStyle = "#fff";
+					context.lineWidth = 3;
+					
+					var radius = (500 / #{login.location.a}) * 0.025;
+					var xposition = (xkor * 500) / #{login.location.a};
+					var yposition = 500 - ((ykor * 500) / #{login.location.b});
+					
+					context.beginPath();
+					context.moveTo(xposition, yposition - radius);
+					context.lineTo(xposition + (radius * Math.cos(Math.PI/12)), yposition + radius / 2);
+					context.lineTo(xposition - (radius * Math.cos(Math.PI/12)), yposition + radius / 2);		
+					context.closePath();
+					context.stroke();
+					context.fill();
+									
+					context.font = "8pt sans-serif";
+					context.textAlign = "center"
+					context.textBaseline = "middle";
+					context.fillStyle = "#00f";
+					context.fillText(nummer, xposition, yposition + radius);			
+					
+				}
+				
+				
+				
+				
+				<ui:repeat var="item" value="#{pileMgr.items}" >
+					renderPile('#{item.name}', '#{item.bark}', '#{item.diameter}', '#{item.kind}', '#{item.profile}', '#{item.arc}', #{item.x - login.location.x}, #{item.y - login.location.y});					
+				</ui:repeat>
+				
+				<ui:repeat var="item" value="#{plankMgr.items}" >
+					renderPlank('#{item.name}', '#{item.bark}', '#{item.diameter}', '#{item.kind}', #{item.x - login.location.x}, #{item.y - login.location.y}, #{item.x1 - login.location.x}, #{item.y1 - login.location.y});					
+				</ui:repeat>
+				
+				<ui:repeat var="item" value="#{findingMgr.items}" >
+					renderFinding('#{item.name}', #{item.x - login.location.x}, #{item.y - login.location.y});					
+				</ui:repeat>
+				
+			</script>
+				
+				
+			</ui:define>
+			
+			<ui:define name="formular">
+			
+				<div style="float: right;">
+					<canvas id="plan" width="500" height="500" style="border: 1px solid black;"></canvas>
+				</div>	
+				
+				<h:form id="formular" >
+				
+					<div style="width: 520px; min-height: 500px;">
+									
+					<gd:inputName mgr="#{plankMgr}" 
+						label="#{msgs.plank_name_label}" 
+						title="#{msgs.plank_name_title}" 
+						validatorMsg="#{msgs.plank_name_error}" 
+						min="1" max="10"/>
+										
+					<gd:chooseDescriptor mgr="#{plankMgr}" category="befund"  
+						label="#{msgs.plank_descriptor_label}"
+						title="#{msgs.plank_descriptor_title}" />
+						
+					<gd:chooseDescriptor mgr="#{plankMgr}" category="kontext" field="context"
+						label="#{msgs.plank_context_label}"
+						title="#{msgs.plank_context_title}" />
+													
+					<div>
+						<h:outputLabel for="bark" styleClass="label"
+							value="#{msgs.wood_bark_label}" 
+							title="#{msgs.wood_bark_title}" />
+						<h:selectOneMenu id="bark" value="#{plankMgr.curItem.bark}" styleClass="entry selectCode">
+							<f:selectItem itemValue="_" itemLabel="_"/>
+							<f:selectItem itemValue="W" itemLabel="W"/> 
+							<f:selectItem itemValue="Wr" itemLabel="Wr"/> 
+							<f:selectItem itemValue="Wb" itemLabel="Wb"/> 
+							<f:selectItem itemValue="W?" itemLabel="W?"/>
+						</h:selectOneMenu>												
+					</div>	
+									
+					<div>
+						<h:outputLabel for="burning"  styleClass="label" 
+							value="#{msgs.plank_burning_label}"
+							title="#{msgs.plank_burning_title}" />
+						<h:selectOneMenu id="burning" value="#{plankMgr.curItem.burning}" styleClass="entry selectCode">
+							<f:selectItem itemValue="_" itemLabel="_"/>
+							<f:selectItem itemValue="v" itemLabel="v"/>
+						</h:selectOneMenu>	
+					</div>					
+					
+					<div>
+						<h:outputLabel for="diameter" styleClass="label"
+							value="#{msgs.wood_diameter_label}" 
+							title="#{msgs.wood_diameter_title}"/>
+						<h:inputText id="diameter" size="2" styleClass="entry" 
+							value="#{plankMgr.curItem.diameter}" validatorMessage="#{msgs.wood_diameter_error}">
+					    	<f:convertNumber pattern="##" />								
+							<f:validateLongRange minimum="0" maximum="99" />
+						</h:inputText>		
+					</div>
+									
+					<div>
+						<h:outputLabel for="kind" styleClass="label" 
+							value="#{msgs.wood_kind_label}" 
+							title="#{msgs.wood_kind_title}"/>
+						<h:selectOneMenu id="kind" value="#{plankMgr.curItem.kind}" styleClass="entry selectCode">
+							<f:selectItem itemValue="_" />
+							<f:selectItem itemValue="Ei" itemLabel="#{msgs.wood_kind_ei_label}"/>
+							<f:selectItem itemValue="Wh" itemLabel="#{msgs.wood_kind_wh_label}"/>
+							<f:selectItem itemValue="K" itemLabel="#{msgs.wood_kind_k_label}"/>
+						</h:selectOneMenu>
+					</div>
+					
+					<div>
+						<h:outputLabel for="x" styleClass="label"
+							value="#{msgs.plank_x_label_start}" 
+							title="#{msgs.geometry_x_title}" />						
+						<h:inputText id="x" size="5" value="#{plankMgr.curItem.x}" 
+								validatorMessage="#{msgs.geometry_x_error}"	styleClass="entry"								
+								converter="#{plankMgr}" validator="#{plankMgr.validateX}">
+						</h:inputText>
+						<h:message for="x" />
+					</div>				
+					
+					<div>
+						<h:outputLabel for="y" styleClass="label"
+							value="#{msgs.plank_y_label_start}"
+							title="#{msgs.geometry_y_title}" />
+						<h:inputText id="y" size="5" value="#{plankMgr.curItem.y}" 
+								validatorMessage="#{msgs.geometry_y_error}" styleClass="entry"
+								converter="#{plankMgr}" validator="#{plankMgr.validateY}">
+						</h:inputText>
+						<h:message for="y" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="z" styleClass="label"
+							value="#{msgs.plank_z_label_start}"
+							title="#{msgs.geometry_z_title}" />
+						<h:inputText id="z" size="5" value="#{plankMgr.curItem.z}" styleClass="entry">
+						</h:inputText>
+						<h:message for="z" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="x1" styleClass="label"
+							value="#{msgs.plank_x_label_end}" 
+							title="#{msgs.geometry_x_title}" />						
+						<h:inputText id="x1" size="5" value="#{plankMgr.curItem.x1}" 
+								validatorMessage="#{msgs.geometry_x_error}"	styleClass="entry"								
+								converter="#{plankMgr}" validator="#{plankMgr.validateX}">
+						</h:inputText>
+						<h:message for="x1" />
+					</div>				
+					
+					<div>
+						<h:outputLabel for="y1" styleClass="label"
+							value="#{msgs.plank_y_label_end}"
+							title="#{msgs.geometry_y_title}" />
+						<h:inputText id="y1" size="5" value="#{plankMgr.curItem.y1}" 
+							validatorMessage="#{msgs.geometry_y_error}" styleClass="entry"
+							converter="#{plankMgr}" validator="#{plankMgr.validateY}" >
+						</h:inputText>
+						<h:message for="y1" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="z1" styleClass="label"
+							value="#{msgs.plank_z_label_end}"
+							title="#{msgs.geometry_z_title}" />
+						<h:inputText id="z1" size="5" value="#{plankMgr.curItem.z1}" styleClass="entry">
+						</h:inputText>
+						<h:message for="z1" />
+					</div>					
+										
+					<div>
+						<h:outputLabel for="sample" styleClass="label"
+							value="#{msgs.wood_sample_label}"
+							title="#{msgs.wood_sample_title}" />
+						<h:selectOneMenu id="sample" styleClass="selectDescriptor entry" 
+							value="#{plankMgr.curItem.sample}" >
+							<f:selectItem itemValue="_" />
+							<f:selectItem itemValue="Scheibe" />
+							<f:selectItem itemValue="ganz" />
+							<f:selectItem itemValue="ganz1" />										
+							<f:selectItem itemValue="ganz2" />
+						</h:selectOneMenu>			
+					</div>
+					
+					<gd:inputNote mgr="#{plankMgr}"
+						label="#{msgs.plank_note_label}" 
+						title="#{msgs.plank_note_title}" />	
+						
+					</div>																
+					
+					<gd:buttons mgr="#{plankMgr}" />
+						
+				</h:form>
+			
+			</ui:define>
+		
+	</ui:composition>       
+   
+</html>

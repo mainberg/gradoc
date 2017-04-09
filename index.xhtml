@@ -1,0 +1,47 @@
+ <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+	<h:head>
+		<meta charset="UTF-8" />
+		<title>Grabungsdokumentation gradoc</title>
+	</h:head>
+	<h:body>
+		<ui:composition template="/resources/gradoc.xhtml">
+			<ui:define name="records">
+				<p><h:outputText value="#{msgs[login.message]}" rendered="#{not empty login.message}" /></p>				
+				<h:form id="loginform" rendered="#{not login.loggedin}">					
+					<h3>#{msgs.login}:</h3>
+					<h:panelGrid id="loginpanel" columns="2">
+						<h:column>#{msgs.task}</h:column>
+						<h:column>
+							<h:selectOneMenu id="task" value="#{login.task}" styleClass="selectDescriptor" converter="#{taskMgr}">
+								<f:selectItem itemLabel="_" noSelectionOption="true"/>
+								<f:selectItems value="#{taskMgr.items}" var="item" itemLabel="#{item.code}" itemValue="#{item}"/>
+							</h:selectOneMenu>
+						</h:column>
+						<h:column>#{msgs.name}:</h:column>
+						<h:column><h:inputText id="userid" value="#{login.userid}" /></h:column>
+						<h:column>#{msgs.password}</h:column>
+						<h:column><h:inputSecret id="password" value="#{login.password}" /></h:column>
+					</h:panelGrid>	
+					<p><h:commandButton id="loginaction" action="#{login.login}" value="Login" /></p>
+				</h:form>
+				<h:form rendered="#{not empty login.task}">
+					<fieldset>
+						<legend>#{msgs.kampagneUndQuadrat}</legend>
+						<gd:chooseCampaign />
+						<h:selectOneMenu id="location" value="#{login.location}" 
+								styleClass="selectDescriptor" converter="#{locationMgr}">
+							<f:selectItem itemLabel="_" noSelectionOption="true"/>								
+							<f:selectItems value="#{locationMgr.items}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>						
+						</h:selectOneMenu>
+						<h:commandButton value="Setzen"/>											
+					</fieldset>
+				</h:form>								
+			</ui:define>			
+		</ui:composition>
+	</h:body>
+</html>

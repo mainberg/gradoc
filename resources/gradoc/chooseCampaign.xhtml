@@ -1,0 +1,15 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<cc:interface>		
+	</cc:interface>
+	<cc:implementation>		
+		<h:selectOneMenu id="campaign" value="#{login.campaign}" 
+				styleClass="selectDescriptor" converter="#{campaignMgr}">
+			<f:selectItem itemLabel="_" noSelectionOption="true"/>								
+			<f:selectItems value="#{campaignMgr.items}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>						
+		</h:selectOneMenu>
+	</cc:implementation>
+</ui:composition>

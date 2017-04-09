@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+      
+    <ui:composition template="/resources/gradoc.xhtml">		
+			
+			<ui:define name="metadata">
+				<f:metadata>
+					<f:viewParam name="id" value="#{sedimentMgr.id}" />
+					<f:viewAction action="#{sedimentMgr.load}"/>
+				</f:metadata>				
+			</ui:define>
+			
+			<ui:define name="styles">
+				<style type="text/css">
+					.nameColumn { width: 100px; }
+					.categoryColumn { width: 100px; }
+					.heightColumn { width: 100px; }
+				</style>
+			</ui:define>
+			
+			<ui:define name="title">
+				#{msgs.sediment_title}
+			</ui:define>		
+		
+			<ui:define name="records">			
+				<h:dataTable id="items" value="#{sedimentMgr.items}" var="item" frame="border" rendered="#{! empty sedimentMgr.items}"
+					headerClass="caption" styleClass="records" rules="cols" columnClasses="editColumn,nameColumn,categoryColumn,heightColumn,noteColumn">
+					<h:column>
+						<f:facet name="header">
+							&#160;
+						</f:facet>
+						<h:button outcome="#{sedimentMgr.form}" image="/img/edit.gif"><f:param name="id" value="#{item.id}" /></h:button>
+					</h:column>						
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.sediment_name_header}" />
+						</f:facet>
+						<h:outputText value="#{item.name}" />							
+					</h:column>	
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.sediment_descriptor_header}" />
+						</f:facet>
+						<h:outputText value="#{item.descriptor.name}" />							
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.geometry_x_header}" />
+						</f:facet>
+						<h:outputText value="#{item.x}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.geometry_y_header}" />
+						</f:facet>
+						<h:outputText value="#{item.y}" />
+					</h:column>							
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.sediment_height_header}" />
+						</f:facet>
+						<h:outputText value="#{item.height}" />
+					</h:column>				
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.sediment_note_header}" />
+						</f:facet>
+						<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+					</h:column>										
+				</h:dataTable>
+				
+				<h:form>
+					<fieldset>				
+						<legend>Export von Sedimenten</legend>
+						<h:outputLabel for="exportFormat" value="Exportformat" />&#160;
+						<h:selectOneMenu id="exportFormat" value="#{sedimentMgr.exportFormat}" styleClass="selectDescriptor" >
+							<f:selectItem itemValue="sediment/standard.xsl" itemLabel="Standard" />
+							<f:selectItem itemValue="sediment/csv.xsl" itemLabel="Csv" />
+						</h:selectOneMenu>&#160;
+						<h:commandButton action="#{sedimentMgr.export}" value="Export"/>
+					</fieldset>
+				</h:form>			
+				
+			</ui:define>
+			
+						
+			<ui:define name="formular">
+			
+				<h:form id="formular">			
+						
+					<gd:inputName mgr="#{sedimentMgr}" 
+						label="#{msgs.sediment_name_label}" 
+						title="#{msgs.sediment_name_title}" 
+						validatorMsg="#{msgs.sediment_name_error}" 
+						min="1" max="100"/>
+					
+					<gd:chooseDescriptor mgr="#{sedimentMgr}" category="sedimenttyp"  
+						label="#{msgs.sediment_descriptor_label}"
+						title="#{msgs.sediment_descriptor_title}" />																			
+					
+					<div>
+						<h:outputLabel for="height" styleClass="label"
+							value="#{msgs.sediment_height_label}" 
+							title="#{msgs.sediment_height_title}" />
+						<h:inputText id="height" size="2" styleClass="entry code" 
+							value="#{sedimentMgr.curItem.height}" required="true" 
+							validatorMessage="#{msgs.sediment_height_error}">
+						</h:inputText>				
+						<h:message for="height" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="x" styleClass="label"
+							value="#{msgs.geometry_x_label}" 
+							title="#{msgs.geometry_x_title}" />						
+						<h:inputText id="x" size="5" value="#{sedimentMgr.curItem.x}" 
+								validatorMessage="#{msgs.geometry_x_error}"	styleClass="entry"								
+								converter="#{sedimentMgr}" validator="#{sedimentMgr.validateX}">
+						</h:inputText>
+						<h:message for="x" />
+					</div>				
+					
+					<div>
+						<h:outputLabel for="y" styleClass="label"
+							value="#{msgs.geometry_y_label}"
+							title="#{msgs.geometry_y_title}" />
+						<h:inputText id="y" size="5" value="#{sedimentMgr.curItem.y}" 
+								validatorMessage="#{msgs.geometry_y_error}" styleClass="entry"
+								converter="#{sedimentMgr}" validator="#{sedimentMgr.validateY}">
+						</h:inputText>
+						<h:message for="y" />
+					</div>
+																					
+					<gd:inputNote mgr="#{sedimentMgr}" 
+						label="#{msgs.sediment_note_label}" 
+						title="#{msgs.sediment_note_title}" />	
+									
+					<gd:buttons mgr="#{sedimentMgr}"/>
+					
+				</h:form>
+								
+		</ui:define>
+		
+	</ui:composition>		
+				
+</html>

@@ -1,0 +1,20 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<cc:interface>
+		<cc:attribute name="label" default="Notiz" />
+		<cc:attribute name="title" default="Die Notiz dient zu beliebigen Freitextnotizen zu einem Descriptor"/>
+		<cc:attribute name="mgr" required="true"/>
+		<cc:attribute name="cols" default="40"/>
+		<cc:attribute name="rows" default="3"/>		
+	</cc:interface>
+	<cc:implementation>
+		<div>			
+			<h:outputLabel for="note" value="#{cc.attrs.label}"	title="#{cc.attrs.title}" styleClass="label"/>
+			<h:inputTextarea id="note" value="#{cc.attrs.mgr.curItem.note}" cols="#{cc.attrs.cols}" rows="#{cc.attrs.rows}" styleClass="entry"/>
+			<h:message for="note" />		
+		</div>
+	</cc:implementation>
+</ui:composition>

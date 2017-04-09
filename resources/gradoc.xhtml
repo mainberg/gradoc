@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <f:view locale="#{login.locale}">
+	    <ui:insert name="metadata"></ui:insert>  
+		<h:head>
+			<meta charset="UTF-8" />
+			<title>#{msgs.gradoc_title}</title>
+			<h:outputStylesheet name="gradoc.css" library="css" />
+			<ui:insert name="styles" />
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js" type="text/javascript" charset="utf-8"/>
+			<ui:insert name="script" />		
+		</h:head>
+		<h:body>		
+			<div id="page">				
+				<div id="menu">
+					<h:link value="#{msgs.gradoc}" outcome="index.jsf" />			
+					<h:link value="#{msgs.pile_menu}" outcome="pile.jsf" disabled="#{empty login.location or empty login.campaign}" />
+					<h:link value="#{msgs.plank_menu}" outcome="plank.jsf" disabled="#{empty login.location or empty login.campaign}" />
+					<h:link value="#{msgs.finding_menu}" outcome="finding.jsf" disabled="#{empty login.location or empty login.campaign}" />
+					<h:link value="#{msgs.artifact_menu}" outcome="artifact.jsf" disabled="#{empty login.location or empty login.campaign}" />
+					<h:link value="#{msgs.sediment_menu}" outcome="sediment.jsf" disabled="#{empty login.location or empty login.campaign}" />
+					<h:link value="#{msgs.protocol_menu}" outcome="protocol.jsf" disabled="#{empty login.campaign}" />
+					<h:link value="#{msgs.photo_menu}" outcome="photo.jsf" disabled="#{empty login.campaign}" />				
+					<h:form style="float: right">		
+						<h:outputText value="#{login.userid}" />
+						<h:commandLink value="#{msgs.logout}" action="#{login.logout}" rendered="#{login.loggedin}"/>
+					</h:form>		
+				</div>
+				<div id="info" >			
+					<div style="text-align: right;">
+						<h:panelGroup rendered="#{login.admin}">
+							<h:link value="#{msgs.task_menu}" outcome="task.jsf"  />|
+							<h:link value="#{msgs.account_menu}" outcome="account.jsf" />
+						</h:panelGroup>
+						<h:panelGroup rendered="#{login.manager}">
+							<h:link value="#{msgs.descriptor_menu}" outcome="descriptor.jsf" />|
+							<h:link value="#{msgs.location_menu}" outcome="location.jsf" />|
+							<h:link value="#{msgs.campaign_menu}" outcome="campaign.jsf" />						
+						</h:panelGroup>
+					</div>	
+					<div>				
+						<h:panelGroup rendered="#{login.existsTask()}">
+							<span style="font-weight: bold;">#{msgs.task_info}:&#160;</span> <h:outputText value="#{login.task.name}" styleClass="taskinf"/>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{login.existsCampaign()}">
+							&#160;|&#160;<span style="font-weight: bold;">#{msgs.campaign_info}:&#160;</span> <h:outputText value="#{login.campaign.name}" styleClass="taskinf"/>
+						</h:panelGroup>
+					</div>
+					<div>
+						<h:panelGroup rendered="#{login.existsLocation()}">
+							<span style="font-weight: bold;">#{msgs.location_info}:&#160;</span> <h:outputText value="#{login.location.name}"  />,&#160;
+							#{msgs.x_info} <h:outputText value="#{login.location.x}" />,&#160;			
+							#{msgs.y_info} <h:outputText value="#{login.location.y}"  />,&#160;			
+							#{msgs.a_info} <h:outputText value="#{login.location.a}"  />,&#160;		
+							#{msgs.b_info} <h:outputText value="#{login.location.b}"  />
+						</h:panelGroup>
+					</div>				
+				</div>
+				
+				<h3 style="padding: 10px 20px 10px 20px;"><ui:insert name="title" /></h3>
+				
+				<div id="content">
+					<ui:insert name="formular" />	
+					<ui:insert name="records" />
+					<ui:insert name="export" />							
+				</div>
+								
+				<div id="footer">
+					<p class="version">www.uwarc.de 2015 Version: #{initParam.version}</p>
+				</div>			
+			</div>			
+		</h:body>
+	</f:view>
+</html>

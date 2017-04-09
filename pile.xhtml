@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+      
+	<ui:composition template="/resources/gradoc.xhtml">
+			
+		<ui:define name="metadata">
+			 <f:metadata>
+				<f:viewParam name="id" value="#{pileMgr.id}" />
+				<f:viewAction action="#{pileMgr.load}"/>
+			</f:metadata>			
+		</ui:define>
+					
+		<ui:define name="script">			
+		</ui:define>
+		
+		<ui:define name="styles">
+			<style type="text/css">
+				.nameColumn { width: 100px; }
+				.categoryColumn { width: 100px; }
+				.barkColumn { width: 20px; }
+				.diameterColumn { width: 30px; }
+				.kindColumn { width: 20px; }
+				.profileColumn { width: 20px; }
+				.arcColumn { width: 20px; }
+				.expositonColumn { width: 20px; }
+				.inclinationColumn { width: 20px; }
+				.topColumn { width: 50px; }
+				.sampleColumn { width: 50px; }
+			</style>
+		</ui:define>
+		
+		<ui:define name="title">
+			 #{msgs.pile_title}
+		</ui:define>		
+		
+		<ui:define name="records">
+			<h:dataTable id="items" value="#{pileMgr.items}" var="item" rendered="#{login.location.x gt 0}" rules="cols" headerClass="caption"
+					frame="border" styleClass="records" 
+					columnClasses="editColumn,nameColumn,categoryColumn,barkColumn,diameterColumn,kindColumn,profileColumn,arcColumn,xColumn,yColumn,expositonColumn,inclinationColumn,topColumn,sampleColumn,noteColumn">
+				<h:column>
+						<f:facet name="header">
+							&#160;
+						</f:facet>
+						<h:button outcome="#{pileMgr.form}" image="/img/edit.gif"><f:param name="id" value="#{item.id}" /></h:button>
+					</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.pile_name_header}" />
+					</f:facet>
+					<h:outputText value="#{item.name}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.pile_descriptor_header}" />
+					</f:facet>
+					<h:outputText value="#{item.descriptor.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.wood_bark_header}" />
+					</f:facet>
+					<h:outputText value="#{item.bark}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.wood_diameter_header}"/>
+					</f:facet>
+					<h:outputText value="#{item.diameter}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.wood_kind_header}" />
+					</f:facet>
+					<h:outputText value="#{item.kind}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.pile_profile_header}" />
+					</f:facet>
+					<h:outputText value="#{item.profile}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.pile_arc_header}" />
+					</f:facet>
+					<h:outputText value="#{item.arc}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.geometry_x_header}" />
+					</f:facet>
+					<h:outputText value="#{item.x}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.geometry_y_header}" />
+					</f:facet>
+					<h:outputText value="#{item.y}" />
+				</h:column>				
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.pile_exposition_header}" />
+					</f:facet>
+					<h:outputText value="#{item.exposition}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.pile_inclination_header}" />
+					</f:facet>
+					<h:outputText value="#{item.inclination}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.pile_top_header}" />
+					</f:facet>
+					<h:outputText value="#{item.top}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.wood_sample_header}" />
+					</f:facet>
+					<h:outputText value="#{item.sample}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.pile_note_header}" />
+					</f:facet>
+					<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+				</h:column>				
+			</h:dataTable>
+			
+			<h:form>
+				<fieldset>				
+					<legend>Export von P-Hölzern</legend>
+					<h:outputLabel for="exportFormat" value="Exportformat" />&#160;
+					<h:selectOneMenu id="exportFormat" value="#{pileMgr.exportFormat}" styleClass="selectDescriptor" >&#160;
+						<f:selectItem itemValue="pile/standard.xsl" itemLabel="Standard" />
+						<f:selectItem itemValue="pile/csv.xsl" itemLabel="CSV" />
+					</h:selectOneMenu>
+					<h:commandButton action="#{pileMgr.export}" value="Export"/>
+				</fieldset>
+			</h:form>
+			
+			<p>
+				<h:outputLink value="http://jotwerk.de:8080/reports/frameset">
+					Report
+					<f:param name="__report" value="pile.rptdesign" />
+					<f:param name="__format" value="pdf" />
+					<f:param name="task" value="#{login.task.id}" />
+					<f:param name="camp" value="#{login.campaign.name}" />
+					<f:param name="RP_x" value="#{login.location.x}" />
+					<f:param name="RP_y" value="#{login.location.y}" />
+					<f:param name="RP_breite" value="#{login.location.a}" />
+					<f:param name="RP_hoehe" value="#{login.location.b}" />
+				</h:outputLink>
+			</p>
+					
+			<script type="text/javascript" charset="utf-8">
+																				
+			var uwarc = {}; // namespace (not required)
+			
+			uwarc.strokeStyles = {"_" : "#000", "W" : "#ff0", "Wr" : "#f00", "Wb" : "#0f0", "W?" : "00f"};
+			uwarc.fillStyles = {"_" : "#ffffff", "Ei" : "#808080", "Wh" : "#FFFF80", "K" : "#FF8080"};
+	
+			function renderPile(nummer, rinde, durchmesser, holzart, querschnitt, winkel, xkor, ykor) {
+				
+				var canvas = document.getElementById("plan");
+				var context = canvas.getContext("2d");
+				context.strokeStyle = uwarc.strokeStyles[rinde];
+				context.fillStyle = uwarc.fillStyles[holzart];
+				context.lineWidth = 3;
+				context.beginPath();
+				var x, y;
+				var radius = (500 / #{login.location.a}) * (durchmesser / 100) / 2;
+				context.save();					
+				
+				/* context.translate(50 * xkorZahl, 50 * ykorZahl); */
+				
+				var xposition = (xkor * 500) / #{login.location.a};
+				var yposition = (ykor * 500) / #{login.location.b};
+								
+				context.translate(xposition, 500 - yposition);
+				
+				/* context.translate(xInQuadrat, yInQuadrat);  */
+				context.save();
+				switch (querschnitt) {
+					case "A":					
+						context.arc(0, 0, radius, 0, 2*Math.PI, true);
+						break;
+					case "B":
+						context.rotate(Math.PI + Math.PI/6 * winkel);
+						context.arc(0, 0.5 * radius, radius, 0, Math.PI, true);
+						break;
+					case "C":
+						context.rotate(Math.PI * 0.75 + (Math.PI/6 * winkel));
+						context.moveTo(-radius, radius);
+						context.arc(-radius, radius, 2 * radius, 0, 1.5 * Math.PI, true);
+						break;
+					case "D":
+						var sqrthalbe = Math.sqrt(0.5) * radius;
+						context.moveTo(-radius, 0);
+						context.lineTo(-sqrthalbe, -sqrthalbe);
+						context.lineTo(0, -radius);
+						context.lineTo(sqrthalbe, -sqrthalbe);
+						context.lineTo(radius, 0);
+						context.lineTo(sqrthalbe, sqrthalbe);
+						context.lineTo(0, radius);
+						context.lineTo(-sqrthalbe, sqrthalbe);
+				}
+								
+				context.closePath();
+				context.stroke();
+				context.fill();
+				context.restore();
+				context.font = "8pt sans-serif";
+				context.textAlign = "center"
+				context.textBaseline = "middle";
+				context.fillStyle = "#00f";
+				context.fillText(nummer, 5, 5);
+				context.restore();
+				
+			}
+			
+			function renderPlank(nummer, rinde, durchmesser, holzart, xkor, ykor, xkor1, ykor1) {
+				
+				var canvas = document.getElementById("plan");
+				var context = canvas.getContext("2d");
+				context.strokeStyle = uwarc.strokeStyles[rinde];
+				context.fillStyle = uwarc.fillStyles[holzart];
+				context.lineWidth = durchmesser / #{login.location.a};
+									
+				/* context.translate(50 * xkorZahl, 50 * ykorZahl); */
+				
+				var xposition = (xkor * 500) / #{login.location.a};
+				var yposition = 500 - ((ykor * 500) / #{login.location.b});
+				var xposition1 = (xkor1 * 500) / #{login.location.a};
+				var yposition1 = 500 - ((ykor1 * 500) / #{login.location.b});
+													
+				context.beginPath();
+				context.moveTo(xposition,  yposition);
+				context.lineTo(xposition1, yposition1);
+				context.fill();
+				context.stroke();
+									
+				context.font = "8pt sans-serif";
+				context.textAlign = "center"
+				context.textBaseline = "middle";
+				context.fillStyle = "#00f";
+				context.fillText(nummer, (xposition + xposition1) / 2 , (yposition + yposition1) / 2);
+				context.restore();
+				
+			}
+			
+			function renderFinding(nummer, xkor, ykor) {
+								
+				var canvas = document.getElementById("plan");
+				var context = canvas.getContext("2d");
+				context.strokeStyle = "#f00";
+				context.fillStyle = "#fff";
+				context.lineWidth = 3;
+				
+				var radius = (500 / #{login.location.a}) * 0.025;
+				var xposition = (xkor * 500) / #{login.location.a};
+				var yposition = 500 - ((ykor * 500) / #{login.location.b});
+				
+				context.beginPath();
+				context.moveTo(xposition, yposition - radius);
+				context.lineTo(xposition + (radius * Math.cos(Math.PI/12)), yposition + radius / 2);
+				context.lineTo(xposition - (radius * Math.cos(Math.PI/12)), yposition + radius / 2);		
+				context.closePath();
+				context.stroke();
+				context.fill();
+								
+				context.font = "8pt sans-serif";
+				context.textAlign = "center"
+				context.textBaseline = "middle";
+				context.fillStyle = "#00f";
+				context.fillText(nummer, xposition, yposition + radius);			
+				
+			}
+			
+			
+			
+			
+			<ui:repeat var="item" value="#{pileMgr.items}" >
+				renderPile('#{item.name}', '#{item.bark}', '#{item.diameter}', '#{item.kind}', '#{item.profile}', '#{item.arc}', #{item.x - login.location.x}, #{item.y - login.location.y});					
+			</ui:repeat>
+			
+			<ui:repeat var="item" value="#{plankMgr.items}" >
+				renderPlank('#{item.name}', '#{item.bark}', '#{item.diameter}', '#{item.kind}', #{item.x - login.location.x}, #{item.y - login.location.y}, #{item.x1 - login.location.x}, #{item.y1 - login.location.y});					
+			</ui:repeat>
+			
+			<ui:repeat var="item" value="#{findingMgr.items}" >
+				renderFinding('#{item.name}', #{item.x - login.location.x}, #{item.y - login.location.y});					
+			</ui:repeat>
+				
+			</script>
+			
+		</ui:define>
+		
+		<ui:define name="formular">
+			
+			<h:form id="formular">
+			
+				<div style="float: right;">
+						<canvas id="plan" width="500" height="500" style="border: 1px solid black;"></canvas>
+				</div>
+						
+				<div style="width: 520px; min-height: 500px;">
+																		
+					<gd:inputName mgr="#{pileMgr}" 
+							label="#{msgs.pile_name_label}" 
+							title="#{msgs.pile_name_title}" 
+							validatorMsg="#{msgs.pile_name_error}" 
+							min="1" max="10"/>	
+					
+					<gd:chooseDescriptor mgr="#{pileMgr}" category="kontext" 
+							label="#{msgs.pile_descriptor_label}"
+							title="#{msgs.pile_descriptor_title}" />	
+					
+					<div>
+						<h:outputLabel for="bark" styleClass="label"
+							value="#{msgs.wood_bark_label}" 
+							title="#{msgs.wood_bark_title}" />
+						<h:selectOneMenu id="bark" value="#{pileMgr.curItem.bark}" styleClass="entry selectCode">
+							<f:selectItem itemValue="_" itemLabel="_"/>
+							<f:selectItem itemValue="W" itemLabel="W"/> 
+							<f:selectItem itemValue="Wr" itemLabel="Wr"/> 
+							<f:selectItem itemValue="Wb" itemLabel="Wb"/> 
+							<f:selectItem itemValue="W?" itemLabel="W?"/>
+						</h:selectOneMenu>
+					</div>
+					
+					<div>
+						<h:outputLabel for="diameter" styleClass="label"
+							value="#{msgs.wood_diameter_label}"
+							title="#{msgs.wood_diameter_title}" />
+						<h:inputText id="diameter" size="2" value="#{pileMgr.curItem.diameter}" required="true"
+							validatorMessage="#{msgs.wood_diameter_error}" styleClass="entry">
+						    <f:convertNumber pattern="##" />								
+							<f:validateLongRange minimum="0" maximum="99" />
+						</h:inputText>
+						<h:message for="diameter" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="kind" styleClass="label" 
+							value="#{msgs.wood_kind_label}" 
+							title="#{msgs.wood_kind_title}"/>
+						<h:selectOneMenu id="kind" value="#{pileMgr.curItem.kind}" styleClass="entry selectCode">
+							<f:selectItem itemValue="_" />
+							<f:selectItem itemValue="Ei" itemLabel="#{msgs.wood_kind_ei_label}"/>
+							<f:selectItem itemValue="Wh" itemLabel="#{msgs.wood_kind_wh_label}"/>
+							<f:selectItem itemValue="K" itemLabel="#{msgs.wood_kind_k_label}"/>
+						</h:selectOneMenu>
+					</div>
+					
+					<div>
+						<h:outputLabel for="profile" styleClass="label" 
+							value="#{msgs.pile_profile_label}"  
+							title="#{msgs.pile_profile_title}"/>
+						<h:selectOneMenu id="profile" value="#{pileMgr.curItem.profile}" styleClass="entry selectCode">
+							<f:selectItem itemValue="_" />
+							<f:selectItem itemValue="A" itemLabel="#{msgs.pile_profile_a_label}"/>
+							<f:selectItem itemValue="B" itemLabel="#{msgs.pile_profile_b_label}"/>
+							<f:selectItem itemValue="C" itemLabel="#{msgs.pile_profile_c_label}"/>
+							<f:selectItem itemValue="D" itemLabel="#{msgs.pile_profile_d_label}"/>
+							<f:selectItem itemValue="E" itemLabel="#{msgs.pile_profile_e_label}"/>
+						</h:selectOneMenu>
+					</div>
+					
+					<div>
+						<h:outputLabel for="arc" styleClass="label"
+							value="#{msgs.pile_arc_label}" 
+							title="#{msgs.pile_arc_title}" />						
+						<h:inputText id="arc" size="2" value="#{pileMgr.curItem.arc}"
+								validatorMessage="#{msgs.pile_arc_label}" styleClass="entry">
+						    <f:convertNumber pattern="##" />								
+							<f:validateLongRange minimum="0" maximum="12" />
+						</h:inputText>
+						<h:message for="arc" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="x" styleClass="label"
+							value="#{msgs.geometry_x_label}" 
+							title="#{msgs.geometry_x_title}" />						
+						<h:inputText id="x" size="5" value="#{pileMgr.curItem.x}" 
+								validatorMessage="#{msgs.geometry_x_error}"	styleClass="entry"								
+								converter="#{pileMgr}" validator="#{pileMgr.validateX}">
+						</h:inputText>
+						<h:message for="x" />
+					</div>				
+					
+					<div>
+						<h:outputLabel for="y" styleClass="label"
+							value="#{msgs.geometry_y_label}"
+							title="#{msgs.geometry_y_title}" />
+						<h:inputText id="y" size="5" value="#{pileMgr.curItem.y}" 
+								validatorMessage="#{msgs.geometry_y_error}" styleClass="entry"
+								converter="#{pileMgr}" validator="#{pileMgr.validateY}">
+						</h:inputText>
+						<h:message for="y" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="exposition" styleClass="label" 
+							value="#{msgs.pile_exposition_label}" 
+							title="#{msgs.pile_exposition_title}" />
+						<h:inputText id="exposition" size="3" value="#{pileMgr.curItem.exposition}" 
+								validatorMessage="#{msgs.pile_exposition_error}" styleClass="entry"> 
+						    <f:convertNumber pattern="###" />
+							<f:validateLongRange minimum="0" maximum="999" />
+						</h:inputText>
+						<h:message for="exposition" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="inclination" styleClass="label"
+							value="#{msgs.pile_inclination_label}" 
+							title="#{msgs.pile_inclination_title}"/>
+						<h:selectOneMenu id="inclination" value="#{pileMgr.curItem.inclination}" styleClass="entry selectCode">
+							<f:selectItem itemValue="_" itemLabel="_"/>
+							<f:selectItem itemValue="N" itemLabel="N"/> 
+							<f:selectItem itemValue="NO" itemLabel="NO"/> 
+							<f:selectItem itemValue="O" itemLabel="O"/> 
+							<f:selectItem itemValue="SO" itemLabel="SO"/>
+							<f:selectItem itemValue="S" itemLabel="S"/>
+							<f:selectItem itemValue="SW" itemLabel="SW"/>
+							<f:selectItem itemValue="W" itemLabel="W"/>
+							<f:selectItem itemValue="NW" itemLabel="NW"/>
+						</h:selectOneMenu>				
+					</div>						
+					
+					<div>
+						<h:outputLabel for="top" styleClass="label" 
+							value="#{msgs.pile_top_label}" 
+							title="#{msgs.pile_top_title}" />
+						<h:selectOneMenu id="top" value="#{pileMgr.curItem.top}" styleClass="entry selectDescriptor">
+							<f:selectItem itemValue="_"/>
+							<f:selectItem itemValue="Spitzenbereich" />
+							<f:selectItem itemValue="Spitze" />
+							<f:selectItem itemValue="Facetten" />
+						</h:selectOneMenu>
+					</div>
+					
+					<div>
+						<h:outputLabel for="sample" styleClass="label"
+							value="#{msgs.wood_sample_label}"
+							title="#{msgs.wood_sample_title}" />
+						<h:selectOneMenu id="sample" value="#{pileMgr.curItem.sample}" styleClass=" entry selectDescriptor">
+							<f:selectItem itemValue="_" />
+							<f:selectItem itemValue="Scheibe" />
+							<f:selectItem itemValue="ganz" />
+							<f:selectItem itemValue="ganz1" />
+							<f:selectItem itemValue="ganz2" />
+						</h:selectOneMenu>
+					</div>			
+									
+					<gd:inputNote mgr="#{pileMgr}"
+							label="#{msgs.pile_note_label}" 
+							title="#{msgs.pile_note_title}" />	
+						
+				</div>			
+																										
+				<gd:buttons mgr="#{pileMgr}" view="pholz"/>
+				
+			</h:form>
+			
+			
+								
+		</ui:define>
+		
+	</ui:composition>
+				
+</html>

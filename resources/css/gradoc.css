@@ -1,0 +1,140 @@
+@CHARSET "UTF-8";
+
+div#page {
+	font-family: Verdana, Helvetica, Sans;
+	font-size: 10pt;
+	background-color: #99ff99;
+	width: 1200px;
+}
+
+div#menu, div#footer, div#adminmenu {
+	width: 1200px;
+	height: 50px;
+	padding: 10px;
+	background-color: #345F41;
+	box-sizing: border-box;
+}
+
+div#menu span,
+div#menu a, 
+div#menu a:visited {
+	text-decoration: none;
+	color: #ffff66;
+	font-size: 14pt;
+	padding: 0 10px;
+}
+
+div#adminmenu span,
+div#adminmenu a, 
+div#adminmenu a:visited {
+	text-decoration: none;
+	color: #ffff66;
+	font-size: 12pt;
+	padding: 0 10px;
+}
+
+div#info {
+	padding: 0 20px 20px 20px;
+	background-color: #ffcc33;
+}
+
+
+div#menu span {
+	color: #FFCC33;
+}
+
+div#menu a:hover {
+	text-decoration: none;
+	color: #004040;
+	font-size: 14pt;
+}
+
+.taskinf {
+	color: #ff5e00;
+	font-size: 18pt;
+}
+
+.descriptor {
+	width: 300px;
+}
+
+div#content {	
+	width: 95%;
+	margin: 0 auto;
+	min-height: 600px;
+}
+
+.formwidth {
+	width: 650px;
+}
+
+/*Datatable */
+.records {
+	width: 900px;
+	margin: 30px 0 30px 0;
+}
+
+/*Caption line of datatable */
+.caption {
+	background-color: #ffcc33;
+	border-bottom: #aaaaaa 1px solid;
+}
+
+/* Width of columns in datatables */
+.nameColumn { width: 150px; }
+.dateColumn { width: 60px; }
+.categoryColumn { width: 100px; }
+.noteColumn { width: *; }
+.editColumn { width: 30px; }
+.xyColumn { width: 90px; }
+.signaturColumn { width: 50px; }
+
+
+
+.selectDescriptor {
+	width: 150px;
+}
+
+.selectCode {
+	width: 100px;
+}
+
+.inputDatum {
+	width: 100px;
+}
+
+.inputNummer {
+	width: 150px;
+}
+
+.label {
+	display: inline-block; 
+	text-align: right;
+	vertical-align: top; 
+	width: 150px; 
+	padding: 0 15px 0 0;
+}
+
+.entry {
+	display: inline-block; 
+	text-align: left;
+}
+
+.labelEntryElement {
+	width: 150px; 
+	float: left; 
+	text-align: right; 
+	padding-right: 15px;
+}
+
+.buttons {
+   	background-color: #ffcc33;
+}
+
+.valueEntryElement {
+	left-margin: 200px;
+}
+
+.messageEntryElement {
+	clear: both;
+}

@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<cc:interface>
+		<cc:attribute name="label" default="Name"/>
+		<cc:attribute name="title" default="Bitte geben Sie einen Namen ein"/>
+		<cc:attribute name="validatorMsg" default="Eintrag  muss zwischen 3 und 100 lang sein."/>
+		<cc:attribute name="min" default="3"/>
+		<cc:attribute name="max" default="100"/>
+		<cc:attribute name="mgr" required="true"/>
+	</cc:interface>
+	<cc:implementation>
+		<div>
+			<h:outputLabel for="name" value="#{cc.attrs.label}" title="#{cc.attrs.title}" styleClass="label"/>
+			<h:inputText id="name" size="50" styleClass="entry descriptor" 
+				value="#{cc.attrs.mgr.curItem.name}" required="true" 
+				validatorMessage="#{cc.attrs.validatorMsg}">
+				<f:validateLength minimum="#{cc.attrs.min}" maximum="#{cc.attrs.max}"/>
+			</h:inputText>				
+			<h:message for="name" />
+		</div>			
+	</cc:implementation>
+</ui:composition>

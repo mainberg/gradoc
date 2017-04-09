@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+      
+    <ui:composition template="/resources/gradoc.xhtml">		
+			
+			<ui:define name="metadata">
+				<f:metadata>
+					<f:viewParam name="id" value="#{locationMgr.id}" />
+					<f:viewAction action="#{locationMgr.load}"/>
+				</f:metadata>				
+			</ui:define>
+			
+			<ui:define name="styles">
+				<style type="text/css">
+					.categoryColumn { width: 100px; }
+					.nameColumn { width: 100px; }
+					.aColumn { width: 100px; }
+					.bColumn { width: 100px; }
+				</style>
+			</ui:define>
+			
+			<ui:define name="title">
+				#{msgs.location_title}
+			</ui:define>		
+		
+			<ui:define name="records">			
+				<h:dataTable id="items" value="#{locationMgr.items}" var="item" frame="border" rendered="#{! empty locationMgr.items}" rules="cols" headerClass="caption"
+					styleClass="records" columnClasses="editColumn,categoryColumn,nameColumn,xyColumn,xyColumn,aColumn,bColumn,noteColumn">						
+					<h:column>
+						<f:facet name="header">
+							&#160;
+						</f:facet>
+						<h:button outcome="#{locationMgr.form}" image="/img/edit.gif"><f:param name="id" value="#{item.id}" /></h:button>
+					</h:column>					
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.location_category_header}" />
+						</f:facet>
+						<h:outputText value="#{item.category}" />							
+					</h:column>	
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.location_name_header}" />
+						</f:facet>
+						<h:outputText value="#{item.name}" />							
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.location_x_header}" />
+						</f:facet>
+						<h:outputText value="#{item.x}" />							
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.location_y_header}" />
+						</f:facet>
+						<h:outputText value="#{item.y}" />							
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.location_a_header}" />
+						</f:facet>
+						<h:outputText value="#{item.a}" />							
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.location_b_header}" />
+						</f:facet>
+						<h:outputText value="#{item.b}" />							
+					</h:column>											
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.location_note_header}" />
+						</f:facet>
+						<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+					</h:column>						
+				</h:dataTable>
+				
+				<h:form>
+					<fieldset>				
+						<legend>Export von Quadraten</legend>
+						<h:outputLabel for="exportFormat" value="Exportformat" />&#160;
+						<h:selectOneMenu id="exportFormat" value="#{locationMgr.exportFormat}" styleClass="selectDescriptor" >&#160;
+							<f:selectItem itemValue="location/quadrate.xsl" itemLabel="Quadrate" />
+						</h:selectOneMenu>
+						<h:commandButton action="#{locationMgr.export}" value="Export"/>
+					</fieldset>
+				</h:form>
+				
+			</ui:define>
+			
+						
+			<ui:define name="formular">
+			
+				<h:form id="formular">							
+													
+					<div>
+						<h:outputLabel for="category" styleClass="label"
+							value="#{msgs.location_category_label}" 
+							title="#{msgs.location_category_title}" />
+						<h:selectOneMenu id="category" value="#{locationMgr.curItem.category}" 
+							styleClass="entry selectDescriptor" required="true" 
+							requiredMessage="#{msgs.location_category_error}">
+							<f:selectItem itemLabel="_" noSelectionOption="true"/>
+							<f:selectItem itemLabel="#{msgs.location_category_quadrat_label}" itemValue="quadrat"/>
+							<f:selectItem itemLabel="#{msgs.location_category_schnitt_label}" itemValue="schnitt"/>
+							<f:selectItem itemLabel="#{msgs.location_category_sektor_label}" itemValue="sektor"/>
+							<f:selectItem itemLabel="#{msgs.location_category_grabungsfläche_label}" itemValue="grabungsfläche"/>
+							<f:selectItem itemLabel="#{msgs.location_category_aufschluss_label}" itemValue="aufschluss"/>
+							<f:selectItem itemLabel="#{msgs.location_category_bohrung_label}" itemValue="bohrung"/>
+						</h:selectOneMenu>
+						<h:message for="category" />
+					</div>
+					
+					<gd:inputName mgr="#{locationMgr}"  
+						label="#{msgs.location_name_label}" 
+						title="#{msgs.location_name_title}" 
+						validatorMsg="#{msgs.location_name_error}" 
+						min="1" max="50"/>
+						
+					<div>
+						<h:outputLabel for="signature" value="Namenskürzel" 
+						title="Bitte ein Namenskürzel für Fundnummern etc. eingeben" styleClass="label"/>
+						<h:inputText id="signature" size="15" styleClass="entry descriptor" 
+							value="#{locationMgr.curItem.signature}" >															
+						</h:inputText>
+						<h:message for="signature" />	
+					</div>						
+					
+					<div>
+						<h:outputLabel for="x" value="#{msgs.location_x_label}" 
+						title="#{msgs.location_x_title}" styleClass="label"/>
+						<h:inputText id="x" size="20" styleClass="entry descriptor" 
+							value="#{locationMgr.curItem.x}" 
+							validatorMessage="#{msgs.location_x_error}">
+							<f:converter converterId="javax.faces.BigDecimal"/>
+							<f:validateRequired />									
+						</h:inputText>
+						<h:message for="x" />	
+					</div>
+					
+					<div>
+						<h:outputLabel for="y" value="#{msgs.location_y_label}" 
+						title="#{msgs.location_y_title}" styleClass="label"/>
+						<h:inputText id="y" size="20" styleClass="entry descriptor" 
+							value="#{locationMgr.curItem.y}" 
+							validatorMessage="#{msgs.location_y_error}">
+							<f:converter converterId="javax.faces.BigDecimal"/>
+							<f:validateRequired />
+						</h:inputText>
+						<h:message for="y" />	
+					</div>
+					
+					<div>
+						<h:outputLabel for="a" value="#{msgs.location_a_label}" 
+						title="#{msgs.location_a_title}" styleClass="label"/>
+						<h:inputText id="a" size="10" styleClass="entry descriptor" 
+							value="#{locationMgr.curItem.a}"
+							validatorMessage="#{msgs.location_a_error}">
+							<f:converter converterId="javax.faces.BigDecimal"/>
+							<f:validateRequired />
+						</h:inputText>
+						<h:message for="a" />	
+					</div>
+					
+					<div>
+						<h:outputLabel for="b" value="#{msgs.location_b_label}" 
+						title="#{msgs.location_b_title}" styleClass="label"/>
+						<h:inputText id="b" size="10" styleClass="entry descriptor" 
+							value="#{locationMgr.curItem.b}"
+							validatorMessage="#{msgs.location_b_error}">
+							<f:converter converterId="javax.faces.BigDecimal"/>
+							<f:validateRequired />
+						</h:inputText>
+						<h:message for="b" />	
+					</div>				
+					
+					<gd:inputNote mgr="#{locationMgr}"
+						label="#{msgs.location_note_label}" 
+						title="#{msgs.location_note_title}" />
+					
+					<gd:savecanceldelete mgr="#{locationMgr}"/>					
+					
+				</h:form>
+								
+		</ui:define>
+		
+	</ui:composition>		
+				
+</html>

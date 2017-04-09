@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+      
+    <ui:composition template="/resources/gradoc.xhtml">		
+			
+			<ui:define name="metadata">
+				<f:metadata>
+					<f:viewParam name="id" value="#{accountMgr.id}" />
+					<f:viewAction action="#{accountMgr.load}"/>
+				</f:metadata>				
+			</ui:define>
+			
+			<ui:define name="title">
+				Eingabe von Nutzerkonten
+			</ui:define>
+			
+		
+			<ui:define name="records">			
+				<h:dataTable id="accounts" value="#{accountMgr.items}" var="acc" frame="border" rendered="#{! empty accountMgr.items}">
+						
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Nutzerkonto" />
+							</f:facet>
+							<h:outputText value="#{acc.name}" />							
+						</h:column>					
+						<h:column>
+							<f:facet name="header">
+								&#160;
+							</f:facet>
+							<h:link outcome="account" value="Ändern"><f:param name="id" value="#{acc.id}" /></h:link>
+						</h:column>
+							
+				</h:dataTable>
+			</ui:define>
+			
+						
+			<ui:define name="formular">
+			
+				<h:form id="formular">
+					
+					<fieldset>
+						<legend>Eingabe von Nutzeraccounts</legend>
+						
+						<gd:inputName mgr="#{accountMgr}" min="2"/>
+						
+						<p>
+							<h:outputLabel for="fullname" value="Voller Name" /><br/>
+							<h:inputText id="fullname" size="50" styleClass="descriptor" value="#{accountMgr.curItem.fullname}" required="true" />
+						</p>
+						
+						<p>
+							<h:outputLabel for="password" value="Passwort" /><br/>
+							<h:inputText id="password" size="50" styleClass="descriptor" value="#{accountMgr.curItem.password}" required="true" 
+								validatorMessage="Passwort muss zwischen 2 und 25 lang sein.">
+								<f:validateLength minimum="2" maximum="25"/>
+							</h:inputText>
+						</p>
+						
+						<fieldset>
+							<legend>Nutzerrollen</legend>
+							<h:dataTable id="roles" value="#{accountMgr.curItem.roles}" var="role" frame="border" rendered="#{! empty accountMgr.curItem.roles}">						
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Maßnahme" />
+									</f:facet>
+									<h:outputText value="#{role.task.code}" />							
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Recht" />
+									</f:facet>
+									<h:outputText value="#{role.permission}" />							
+								</h:column>
+								<h:column>								
+									<h:commandButton action="#{accountMgr.deleteRole(role.id)}" value="delete"/>							
+								</h:column>												
+							</h:dataTable>
+							<fieldset>
+								<legend>Eingabe von Rollen</legend>							
+								<p>
+									<h:outputLabel for="task" value="Maßnahme" /><br/>
+									<h:selectOneMenu id="task" value="#{accountMgr.curRole.task}" styleClass="selectCode" converter="#{taskMgr}">
+										<f:selectItem itemLabel="_" noSelectionOption="true"/>
+										<f:selectItems value="#{taskMgr.items}" var="task" itemValue="#{task}" itemLabel="#{task.code}"/>
+									</h:selectOneMenu><br/>
+									<h:message for="task" />
+								</p>
+								<p>
+									<h:outputLabel for="permission" value="Recht" /><br/>
+									<h:selectOneMenu id="permission" value="#{accountMgr.curRole.permission}" styleClass="selectCode">
+										<f:selectItem itemLabel="_" noSelectionOption="true"/>
+										<f:selectItem itemValue="manager" itemLabel="Manager"/>
+										<f:selectItem itemValue="diver" itemLabel="Diver"/> 
+										<f:selectItem itemValue="editor" itemLabel="Editor"/>
+									</h:selectOneMenu><br/>
+									<h:message for="permission" />
+								</p>
+							</fieldset>
+							<h:commandButton action="#{accountMgr.addRole}" value="add"/>							
+						</fieldset>													
+					</fieldset>
+																		
+					<gd:buttons mgr="#{accountMgr}" view="account"/>
+						
+				</h:form>
+								
+		</ui:define>
+		
+	</ui:composition>		
+				
+</html>

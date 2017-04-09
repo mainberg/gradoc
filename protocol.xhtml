@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+      
+    <ui:composition template="/resources/gradoc.xhtml">
+		
+			<ui:define name="metadata">
+				<f:metadata>
+					<f:viewParam name="id" value="#{protocolMgr.id}" />
+					<f:viewAction action="#{protocolMgr.load}"/>
+				</f:metadata>				
+			</ui:define>
+			
+			<ui:define name="styles">
+				<style type="text/css">
+					.categoryColumn { width: 100px; }
+					.nameColumn { width: 100px; }
+				</style>
+			</ui:define>
+					
+			<ui:define name="title">
+				#{msgs.protocol_title}
+			</ui:define>
+		
+			<ui:define name="records">	
+					
+				<h:dataTable id="items" value="#{protocolMgr.items}" var="item" rules="cols" headerClass="caption"
+					frame="border" styleClass="records" columnClasses="editColumn,dateColumn,categoryColumn,nameColumn,noteColumn">
+					<h:column>
+						<f:facet name="header">
+							&#160;
+						</f:facet>
+						<h:button outcome="#{protocolMgr.form}" image="/img/edit.gif"><f:param name="id" value="#{item.id}" /></h:button>
+					</h:column>					
+					<h:column style="width: 150px;">
+						<f:facet name="header">
+							<h:outputText value="#{msgs.protocol_date_label}" />
+						</f:facet>
+						<h:outputText value="#{item.date}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.protocol_descriptor_header}" />
+						</f:facet>
+						<h:outputText value="#{item.descriptor.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.protocol_location_header}" />
+						</f:facet>
+						<h:outputText value="#{item.location.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.protocol_name_header}" />
+						</f:facet>
+						<h:outputText value="#{item.name}" />
+					</h:column>					
+					<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{msgs.protocol_note_header}" />
+							</f:facet>
+							<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+					</h:column>							
+				</h:dataTable>
+				
+				
+				
+			</ui:define>
+			
+			<ui:define name="formular">	
+				
+				<h:form id="formular">
+													
+					<gd:inputName mgr="#{protocolMgr}"   
+						label="#{msgs.protocol_name_label}" 
+						title="#{msgs.protocol_name_title}" 
+						validatorMsg="#{msgs.protocol_name_error}" 
+						min="1" max="100"/>
+						
+					<gd:inputDatum value="#{protocolMgr.curItem.date}" 
+						label="#{msgs.protocol_date_label}" 
+						title="#{msgs.protocol_date_title}"
+						validatorMsg="#{msgs.protocol_date_error}"/>
+										
+					<gd:chooseDescriptor mgr="#{protocolMgr}" category="kategorie"  
+						label="#{msgs.protocol_descriptor_label}"
+						title="#{msgs.protocol_descriptor_title}" />
+						
+					<gd:chooseLocation mgr="#{protocolMgr}"  
+						label="#{msgs.protocol_location_label}"
+						title="#{msgs.protocol_location_title}" />
+					
+					<gd:inputNote mgr="#{protocolMgr}" rows="15" cols="80" 
+						label="#{msgs.protocol_note_label}" 
+						title="#{msgs.protocol_note_title}" />
+					
+					<gd:buttons mgr="#{protocolMgr}"/>					
+								
+				</h:form>
+			
+			</ui:define>
+				
+			<ui:define name="export">		
+				
+				<h:form>
+					<fieldset>				
+						<legend>Export von Protokollen</legend>
+						<h:outputLabel for="exportFormat" value="Exportformat" />&#160;
+						<h:selectOneMenu id="exportFormat" value="#{protocolMgr.exportFormat}" styleClass="selectDescriptor" >&#160;
+							<f:selectItem itemValue="protocol/standard.xsl" itemLabel="Standard" />
+						</h:selectOneMenu>
+						<h:commandButton action="#{protocolMgr.export}" value="Export"/>
+					</fieldset>
+			    </h:form>
+			
+			</ui:define>
+		
+	</ui:composition>  
+      
+    
+</html>

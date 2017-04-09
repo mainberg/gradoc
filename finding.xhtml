@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc"
+      xmlns:p="http://primefaces.org/ui" >
+      
+   <ui:composition template="/resources/gradoc.xhtml">
+		
+			<ui:define name="metadata">
+				<f:metadata>
+					<f:viewParam name="id" value="#{findingMgr.id}" />
+					<f:viewAction action="#{findingMgr.load}"/>
+				</f:metadata>				
+			</ui:define>
+			
+			<ui:define name="styles">
+				<style type="text/css">
+					.nameColumn { width: 100px; }
+					.categoryColumn { width: 100px; }
+					.kindColumn { width: 100px; }
+				</style>
+			</ui:define>
+			
+			<ui:define name="title">
+				#{msgs.finding_title}
+			</ui:define>
+		
+			<ui:define name="records">
+				<h:form>
+				<p:dataTable 
+					id="itemlist" 
+					var="item" 
+					value="#{findingMgr.items}" 
+					paginator="true" 
+					rows="10" 
+					filteredValue="#{findingMgr.filteredItems}"
+					sortBy="#{item.number}">
+					<p:column 
+						headerText="#{msgs.finding_number_header}" 
+						filterBy="#{item.number}" 
+						filterMatchMode="exact" 
+						sortBy="#{item.number}">
+						<h:outputText value="#{item.number}"/>
+					</p:column>	
+					<p:column headerText="#{msgs.finding_kind_header}" 
+						filterBy="#{item.kind}" 
+						filterMatchMode="startsWith" 
+						sortBy="#{item.kind}">
+						<h:outputText value="#{item.kind}"/>
+					</p:column>
+					<p:column headerText="#{msgs.finding_descriptor_header}" 
+						filterBy="#{item.descriptor.name}" 
+						filterMatchMode="contains" >
+						<h:outputText value="#{item.descriptor.name}" />
+					</p:column>
+					<p:column headerText="#{msgs.finding_context_header}" >
+						<h:outputText value="#{item.context.name}" />
+					</p:column>										
+					<p:column headerText="#{msgs.geometry_x_header}">
+						<h:outputText value="#{item.x}" />
+					</p:column>
+					<p:column headerText="#{msgs.geometry_y_header}">
+						<h:outputText value="#{item.y}" />
+					</p:column>
+					<p:column headerText="#{msgs.finding_count_header}">
+						<h:outputText value="#{item.count}" />
+					</p:column>	
+					<p:column headerText="#{msgs.finding_weight_header}" >
+						<h:outputText value="#{item.weight}" />
+					</p:column>									
+					<p:column headerText="#{msgs.finding_note_header}">
+						<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+					</p:column>			
+				</p:dataTable>
+			</h:form>
+						
+				<h:dataTable id="items" value="#{findingMgr.items}" var="item" rules="cols" headerClass="caption"
+					frame="border" styleClass="records" columnClasses="editColumn,nameColumn,signaturColumn,categoryColumn,categoryColumn,xyColumn,xyColumn,noteColumn">
+					<h:column>
+						<f:facet name="header">
+							&#160;
+						</f:facet>
+						<h:button outcome="#{findingMgr.form}" image="/img/edit.gif"><f:param name="id" value="#{item.id}" /></h:button>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.finding_number_header}" />
+						</f:facet>
+						<h:outputText value="#{item.campaign.name} #{item.location}-#{item.number}"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.finding_kind_header}" />
+						</f:facet>
+						<h:outputText value="#{item.kind}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.finding_descriptor_header}" />
+						</f:facet>
+						<h:outputText value="#{item.descriptor.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.finding_context_header}" />
+						</f:facet>
+						<h:outputText value="#{item.context.name}" />
+					</h:column>										
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.geometry_x_header}" />
+						</f:facet>
+						<h:outputText value="#{item.x}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.geometry_y_header}" />
+						</f:facet>
+						<h:outputText value="#{item.y}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.finding_count_header}" />
+						</f:facet>
+						<h:outputText value="#{item.count}" />
+					</h:column>	
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.finding_weight_header}" />
+						</f:facet>
+						<h:outputText value="#{item.weight}" />
+					</h:column>									
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.finding_note_header}" />
+						</f:facet>
+						<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+					</h:column>										
+				</h:dataTable>
+				
+				<h:form>
+					<fieldset>				
+						<legend>Export von Funden</legend>
+						<h:outputLabel for="exportFormat" value="Exportformat" />&#160;
+						<h:selectOneMenu id="exportFormat" value="#{findingMgr.exportFormat}" styleClass="selectDescriptor" >&#160;
+							<f:selectItem itemValue="finding/standard.xsl" itemLabel="Standard" />
+							<f:selectItem itemValue="finding/csv.xsl" itemLabel="CSV" />
+						</h:selectOneMenu>
+						<h:commandButton action="#{findingMgr.export}" value="Export"/>
+					</fieldset>
+				</h:form>
+								
+				<p>
+					<h:outputLink value="http://jotwerk.de:8080/reports/frameset">
+						Report (Variante 2)
+						<f:param name="__report" value="finding1.rptdesign" />
+						<f:param name="__format" value="pdf" />
+						<f:param name="task" value="#{login.task.id}" />
+						<f:param name="taskName" value="#{login.task.name}" />
+						<f:param name="camp" value="#{login.campaign.name}" />
+						<f:param name="RP_x" value="#{login.location.x}" />
+						<f:param name="RP_y" value="#{login.location.y}" />
+						<f:param name="RP_breite" value="#{login.location.a}" />
+						<f:param name="RP_hoehe" value="#{login.location.b}" />
+					</h:outputLink>
+				</p>
+				<script type="text/javascript" charset="utf-8">
+																				
+			var uwarc = {}; // namespace (not required)
+			
+			uwarc.strokeStyles = {"_" : "#000", "W" : "#ff0", "Wr" : "#f00", "Wb" : "#0f0", "W?" : "00f"};
+			uwarc.fillStyles = {"_" : "#ffffff", "Ei" : "#808080", "Wh" : "#FFFF80", "K" : "#FF8080"};
+	
+			function renderPile(nummer, rinde, durchmesser, holzart, querschnitt, winkel, xkor, ykor) {
+				
+				var canvas = document.getElementById("plan");
+				var context = canvas.getContext("2d");
+				context.strokeStyle = uwarc.strokeStyles[rinde];
+				context.fillStyle = uwarc.fillStyles[holzart];
+				context.lineWidth = 3;
+				context.beginPath();
+				var x, y;
+				var radius = (500 / #{login.location.a}) * (durchmesser / 100) / 2;
+				context.save();					
+				
+				/* context.translate(50 * xkorZahl, 50 * ykorZahl); */
+				
+				var xposition = (xkor * 500) / #{login.location.a};
+				var yposition = (ykor * 500) / #{login.location.b};
+								
+				context.translate(xposition, 500 - yposition);
+				
+				/* context.translate(xInQuadrat, yInQuadrat);  */
+				context.save();
+				switch (querschnitt) {
+					case "A":					
+						context.arc(0, 0, radius, 0, 2*Math.PI, true);
+						break;
+					case "B":
+						context.rotate(Math.PI + Math.PI/6 * winkel);
+						context.arc(0, 0.5 * radius, radius, 0, Math.PI, true);
+						break;
+					case "C":
+						context.rotate(Math.PI * 0.75 + (Math.PI/6 * winkel));
+						context.moveTo(-radius, radius);
+						context.arc(-radius, radius, 2 * radius, 0, 1.5 * Math.PI, true);
+						break;
+					case "D":
+						var sqrthalbe = Math.sqrt(0.5) * radius;
+						context.moveTo(-radius, 0);
+						context.lineTo(-sqrthalbe, -sqrthalbe);
+						context.lineTo(0, -radius);
+						context.lineTo(sqrthalbe, -sqrthalbe);
+						context.lineTo(radius, 0);
+						context.lineTo(sqrthalbe, sqrthalbe);
+						context.lineTo(0, radius);
+						context.lineTo(-sqrthalbe, sqrthalbe);
+				}
+								
+				context.closePath();
+				context.stroke();
+				context.fill();
+				context.restore();
+				context.font = "8pt sans-serif";
+				context.textAlign = "center"
+				context.textBaseline = "middle";
+				context.fillStyle = "#00f";
+				context.fillText(nummer, 5, 5);
+				context.restore();
+				
+			}
+			
+			function renderPlank(nummer, rinde, durchmesser, holzart, xkor, ykor, xkor1, ykor1) {
+				
+				var canvas = document.getElementById("plan");
+				var context = canvas.getContext("2d");
+				context.strokeStyle = uwarc.strokeStyles[rinde];
+				context.fillStyle = uwarc.fillStyles[holzart];
+				context.lineWidth = durchmesser / #{login.location.a};
+									
+				/* context.translate(50 * xkorZahl, 50 * ykorZahl); */
+				
+				var xposition = (xkor * 500) / #{login.location.a};
+				var yposition = 500 - ((ykor * 500) / #{login.location.b});
+				var xposition1 = (xkor1 * 500) / #{login.location.a};
+				var yposition1 = 500 - ((ykor1 * 500) / #{login.location.b});
+													
+				context.beginPath();
+				context.moveTo(xposition,  yposition);
+				context.lineTo(xposition1, yposition1);
+				context.fill();
+				context.stroke();
+									
+				context.font = "8pt sans-serif";
+				context.textAlign = "center"
+				context.textBaseline = "middle";
+				context.fillStyle = "#00f";
+				context.fillText(nummer, (xposition + xposition1) / 2 , (yposition + yposition1) / 2);
+				context.restore();
+				
+			}
+			
+			function renderFinding(nummer, xkor, ykor) {
+								
+				var canvas = document.getElementById("plan");
+				var context = canvas.getContext("2d");
+				context.strokeStyle = "#f00";
+				context.fillStyle = "#fff";
+				context.lineWidth = 3;
+				
+				var radius = (500 / #{login.location.a}) * 0.025;
+				var xposition = (xkor * 500) / #{login.location.a};
+				var yposition = 500 - ((ykor * 500) / #{login.location.b});
+				
+				context.beginPath();
+				context.moveTo(xposition, yposition - radius);
+				context.lineTo(xposition + (radius * Math.cos(Math.PI/12)), yposition + radius / 2);
+				context.lineTo(xposition - (radius * Math.cos(Math.PI/12)), yposition + radius / 2);		
+				context.closePath();
+				context.stroke();
+				context.fill();
+								
+				context.font = "8pt sans-serif";
+				context.textAlign = "center"
+				context.textBaseline = "middle";
+				context.fillStyle = "#00f";
+				context.fillText(nummer, xposition, yposition + radius);			
+				
+			}
+			
+			
+			
+			
+			<ui:repeat var="item" value="#{pileMgr.items}" >
+				renderPile('#{item.name}', '#{item.bark}', '#{item.diameter}', '#{item.kind}', '#{item.profile}', '#{item.arc}', #{item.x - login.location.x}, #{item.y - login.location.y});					
+			</ui:repeat>
+			
+			<ui:repeat var="item" value="#{plankMgr.items}" >
+				renderPlank('#{item.name}', '#{item.bark}', '#{item.diameter}', '#{item.kind}', #{item.x - login.location.x}, #{item.y - login.location.y}, #{item.x1 - login.location.x}, #{item.y1 - login.location.y});					
+			</ui:repeat>
+			
+			<ui:repeat var="item" value="#{findingMgr.items}" >
+				renderFinding('#{item.number}', #{item.x - login.location.x}, #{item.y - login.location.y});					
+			</ui:repeat>
+			
+			var gK = true;
+			
+			/* document.getElementById('formular:x').onfocus = function() {
+				gK = true;	
+			}
+			
+			document.getElementById('formular:y').onfocus = function() {
+				gK = true;	
+			} */
+			
+			  
+		    var canvas = document.getElementById('plan');
+		    var context = canvas.getContext('2d');
+
+		    canvas.addEventListener('mousemove', function(evt) {
+		        var coords = getMousePos(canvas, evt);
+		        document.getElementById('xpos').innerHTML = (coords.x / 500 * #{login.location.a}).toFixed(2);
+		        document.getElementById('ypos').innerHTML = (coords.y / 500 * #{login.location.b}).toFixed(2);
+		      }, false);
+								
+			canvas.onclick = function grapKoord(e) {
+				
+				/* var canvas = document.getElementById('plan'); */
+			   	var coords = getMousePos(canvas, e);
+			   	var xkor = (coords.x / 500 * #{login.location.a}).toFixed(2);
+			   	var ykor = (coords.y / 500 * #{login.location.b}).toFixed(2);
+			   	
+			   	document.getElementById('formular:koords:x').value = xkor;
+			   	document.getElementById('formular:koords:y').value = ykor;
+			   				
+			}
+			
+			function getMousePos(canvas, evt) {
+		        var rect = canvas.getBoundingClientRect();
+		        return {
+		        	x: Math.round((evt.clientX-rect.left)/(rect.right-rect.left)*canvas.width),
+		        	y: 500 - Math.round((evt.clientY-rect.top)/(rect.bottom-rect.top)*canvas.height)
+		        };
+		     }
+				
+			</script>
+							
+				
+			</ui:define>
+			
+			<ui:define name="formular">	
+			
+				<div style="float: right;">
+					X: <span id="xpos">x</span>&#160;Y: <span id="ypos">y</span><br />
+					<canvas id="plan" width="500" height="500" style="border: 1px solid black;" ></canvas>
+				</div>	
+				
+				<h:form id="formular" >
+				
+					<div style="width: 520px; min-height: 500px;">
+							
+					<div>
+						<h:outputLabel for="number" value="#{msgs.finding_number_label}" title="#{msgs.finding_number_label}" styleClass="label"/>
+						#{login.campaign.name} #{login.location.signature}-<h:inputText id="number" size="4"  
+							value="#{findingMgr.curItem.number}" required="true" 
+							validatorMessage="#{msgs.finding_number_error}"  disabled="#{not login.editor}">
+							<f:validateLength minimum="1" maximum="100"/>
+						</h:inputText>				
+						<h:message for="number" />
+					</div>
+										
+					<div>
+						<h:outputLabel for="kind" styleClass="label"
+							value="#{msgs.finding_kind_label}" 
+							title="#{msgs.finding_kind_title}"/>
+						<h:selectOneMenu 
+							id="kind" 
+							value="#{findingMgr.curItem.kind}" 
+							styleClass="entry selectCode"  
+							disabled="#{not login.editor}">
+							<f:selectItem itemValue="_" noSelectionOption="true"/>
+							<f:selectItem itemValue="A" />
+							<f:selectItem itemValue="Ai" />
+							<f:selectItem itemValue="C" />
+							<f:selectItem itemValue="Cv" />
+							<f:selectItem itemValue="Cr" />
+							<f:selectItem itemValue="Crv" />							
+							<f:selectItem itemValue="Cp" />
+							<f:selectItem itemValue="Cpv" />
+							<f:selectItem itemValue="Cw" />
+							<f:selectItem itemValue="Cwv" />							
+							<f:selectItem itemValue="Cb" />	
+							<f:selectItem itemValue="Cbv" />
+							<f:selectItem itemValue="Cn" />
+							<f:selectItem itemValue="Cnv" />							
+							<f:selectItem itemValue="Cs" />
+							<f:selectItem itemValue="Ct" />
+							<f:selectItem itemValue="E" />
+							<f:selectItem itemValue="Eb" />
+							<f:selectItem itemValue="Es" />
+							<f:selectItem itemValue="Em" />
+							<f:selectItem itemValue="Ei" />
+							<f:selectItem itemValue="Ek" />
+							<f:selectItem itemValue="F" />
+							<f:selectItem itemValue="Fa" />
+							<f:selectItem itemValue="Fak" />
+							<f:selectItem itemValue="Fc" />
+							<f:selectItem itemValue="Fr" />
+							<f:selectItem itemValue="Fi" />
+							<f:selectItem itemValue="Fb" />
+							<f:selectItem itemValue="Fk" />
+							<f:selectItem itemValue="Fm" />
+							<f:selectItem itemValue="Fs" />
+							<f:selectItem itemValue="Fn" />
+							<f:selectItem itemValue="Fp" />
+							<f:selectItem itemValue="G" />
+							<f:selectItem itemValue="Ga" />
+							<f:selectItem itemValue="Gi" />
+							<f:selectItem itemValue="Gh" />
+							<f:selectItem itemValue="Gm" />
+							<f:selectItem itemValue="Gr" />
+							<f:selectItem itemValue="Gs" />
+							<f:selectItem itemValue="Gz" />							
+							<f:selectItem itemValue="Gp" />
+							<f:selectItem itemValue="H" />
+							<f:selectItem itemValue="Hi" />
+							<f:selectItem itemValue="Hk" />
+							<f:selectItem itemValue="Hp" />
+							<f:selectItem itemValue="Hr" />
+							<f:selectItem itemValue="Hs" />
+							<f:selectItem itemValue="K" />
+							<f:selectItem itemValue="Kn" />
+							<f:selectItem itemValue="Ki" />
+							<f:selectItem itemValue="Km" />
+							<f:selectItem itemValue="Kp" />
+							<f:selectItem itemValue="Ks" />
+							<f:selectItem itemValue="O" />
+							<f:selectItem itemValue="Ob" />
+							<f:selectItem itemValue="Op" />
+							<f:selectItem itemValue="M" />
+							<f:selectItem itemValue="Mi" />
+							<f:selectItem itemValue="Ms" />
+							<f:selectItem itemValue="R" />
+							<f:selectItem itemValue="S" />
+							<f:selectItem itemValue="Sa" />
+							<f:selectItem itemValue="Sak" />							
+							<f:selectItem itemValue="Si" />
+							<f:selectItem itemValue="Sb" />
+							<f:selectItem itemValue="Sk" />
+							<f:selectItem itemValue="Sm" />
+							<f:selectItem itemValue="Sp" />
+							<f:selectItem itemValue="T" />
+							<f:selectItem itemValue="Ti" />
+							<f:selectItem itemValue="Tn" />
+							<f:selectItem itemValue="Tr" />
+							<f:selectItem itemValue="Ts" />
+							<f:selectItem itemValue="V" />
+							<f:selectItem itemValue="Vv" />
+							<f:selectItem itemValue="W" />
+						</h:selectOneMenu>
+					</div>				
+					
+					<gd:chooseDescriptor mgr="#{findingMgr}" category="befund" 
+						label="#{msgs.finding_descriptor_label}"
+						title="#{msgs.finding_descriptor_title}" />
+						
+				    <gd:chooseDescriptor mgr="#{findingMgr}" category="kontext" field="context"
+						label="#{msgs.finding_context_label}"
+						title="#{msgs.finding_context_title}" />
+						
+					<gd:inputKoords id="koords"
+						xvalue="#{findingMgr.curItem.x}" 
+						yvalue="#{findingMgr.curItem.y}" 
+						mgr="#{findingMgr}" />					
+									
+					<div>
+						<h:outputLabel for="count" styleClass="label" 
+							value="#{msgs.finding_count_label}"  
+							title="#{msgs.finding_count_title}" />
+						<h:inputText 
+							id="count" 
+							size="2" 
+							styleClass="entry"  
+							value="#{findingMgr.curItem.count}" 
+							validatorMessage="#{msgs.finding_count_error}"
+							converter="#{findingMgr}"  
+							disabled="#{not login.editor}">
+							<f:convertNumber pattern="##" />
+							<f:validateLongRange minimum="1" />
+						</h:inputText>
+						<h:message for="count" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="weight" styleClass="label" 
+							value="#{msgs.finding_weight_label}"  
+							title="#{msgs.finding_weight_title}" />
+						<h:inputText 
+							id="weight" 
+							size="6" 
+							styleClass="entry"  
+							value="#{findingMgr.curItem.weight}" 
+							validatorMessage="#{msgs.finding_weight_error}"
+							converter="#{findingMgr}"  
+							disabled="#{not login.editor}">
+							<f:convertNumber pattern="##" />
+							<f:validateLongRange maximum="999999" minimum="0" />
+						</h:inputText>
+						<h:message for="weight" />
+					</div>		
+					
+					<div>
+						<h:outputLabel for="sample" styleClass="label"
+							value="#{msgs.finding_sample_label}"
+							title="#{msgs.finding_sample_title}" />
+						<h:selectOneMenu 
+							id="sample" 
+							value="#{findingMgr.curItem.sample}" 
+							styleClass=" entry selectDescriptor" 
+							disabled="#{not login.editor}">
+							<f:selectItem itemValue="_" />
+							<f:selectItem itemValue="ganz" />
+							<f:selectItem itemValue="teil" />
+						</h:selectOneMenu>
+					</div>
+							
+					
+					<gd:inputNote mgr="#{findingMgr}" 
+						label="#{msgs.finding_note_label}" 
+						title="#{msgs.finding_note_title}" />
+						
+					<h:panelGroup rendered="#{fn:startsWith(findingMgr.curItem.kind,'C')}" >
+						<div>
+							<h:outputLabel 
+								for="farbe"
+								styleClass="label"
+								value="Farbe"
+								title="Farbe einer Scherbe" />
+							<h:inputText 
+								id="farbe"
+								value="#{findingMgr.curItem.farbe}"
+								styleClass="entry"
+								disabled="#{not login.editor}" />
+						</div>
+						<div>
+							<h:outputLabel 
+								for="wanddicke"
+								styleClass="label"
+								value="Wanddicke"
+								title="Wanddicke einer Scherbe" />
+							<h:inputText 
+								id="wanddicke"
+								value="#{findingMgr.curItem.wanddicke}"
+								styleClass="entry"
+								disabled="#{not login.editor}" />
+						</div>	
+						<div>
+							<h:outputLabel 
+								for="magerung"
+								styleClass="label"
+								value="Magerung"
+								title="Magerung einer Scherbe" />
+							<h:inputText 
+								id="magerung"
+								value="#{findingMgr.curItem.magerung}"
+								styleClass="entry"
+								disabled="#{not login.editor}" />
+						</div>	
+						<div>
+							<h:outputLabel 
+								for="katalogtext"
+								styleClass="label"
+								value="Katalogtext"
+								title="Katalogtext zu einer Scherbe" />
+							<h:inputTextarea 
+								id="katalogtext"
+								value="#{findingMgr.curItem.katalogtext}"
+								styleClass="entry"
+								disabled="#{not login.editor}" />
+						</div>						
+					</h:panelGroup>
+									
+					<h:panelGroup rendered="#{fn:startsWith(findingMgr.curItem.kind,'F')}" >
+						<div>
+							<h:outputLabel 
+								for="gesteinsgattung"
+								styleClass="label"
+								value="Gesteinsgattung"
+								title="Gesteinsgattung" />
+							<h:inputText 
+								id="gesteinsgattung"
+								value="#{findingMgr.curItem.gesteinsgattung}"
+								styleClass="entry"
+								disabled="#{not login.editor}" />
+						</div>
+						<div>
+							<h:outputLabel 
+								for="katalogtextf"
+								styleClass="label"
+								value="Katalogtext"
+								title="Katalogtext zu einem Felsgestein" />
+							<h:inputTextarea 
+								id="katalogtextf"
+								value="#{findingMgr.curItem.katalogtext}"
+								styleClass="entry"
+								disabled="#{not login.editor}" />
+						</div>						
+					</h:panelGroup>	
+					
+						
+					</div>						
+										
+					<gd:buttons mgr="#{findingMgr}"/>	
+					
+					
+					
+				</h:form>
+				
+			</ui:define>
+		
+	</ui:composition>   
+    	
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+      
+    <ui:composition template="/resources/gradoc.xhtml">		
+			
+			<ui:define name="metadata">
+				<f:metadata>
+					<f:viewParam name="id" value="#{campaignMgr.id}" />
+					<f:viewAction action="#{campaignMgr.load}"/>
+				</f:metadata>				
+			</ui:define>
+			
+			<ui:define name="styles">
+				<style type="text/css">
+					.nameColumn { width: 100px; }
+					.startColumn { width: 100px; }
+					.endColumn { width: 100px; }
+				</style>
+			</ui:define>
+			
+			<ui:define name="title">
+				#{msgs.campaign_title}
+			</ui:define>		
+		
+			<ui:define name="records">			
+				<h:dataTable id="items" value="#{campaignMgr.items}" var="item" frame="border" rendered="#{! empty campaignMgr.items}"
+				 rules="cols" headerClass="caption" styleClass="records" columnClasses="editColumn,nameColumn,startColumn,endColumn,noteColumn">						
+					<h:column>
+						<f:facet name="header">
+							&#160;
+						</f:facet>
+						<h:button outcome="#{campaignMgr.form}" image="/img/edit.gif"><f:param name="id" value="#{item.id}" /></h:button>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.campaign_name_header}" />
+						</f:facet>
+						<h:outputText value="#{item.name}" />							
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.campaign_start_header}" />
+						</f:facet>
+						<h:outputText value="#{item.start}" >
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+						</h:outputText>							
+					</h:column>	
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.campaign_end_header}" />
+						</f:facet>
+						<h:outputText value="#{item.end}" >
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+						</h:outputText>							
+					</h:column>						
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.campaign_note_header}" />
+						</f:facet>
+						<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+					</h:column>						
+				</h:dataTable>
+			</ui:define>
+			
+						
+			<ui:define name="formular">
+			
+				<h:form id="formular">	
+						
+					<gd:inputName mgr="#{campaignMgr}" 
+						label="#{msgs.campaign_name_label}" 
+						title="#{msgs.campaign_name_title}" 
+						validatorMsg="#{msgs.campaign_name_error}" 
+						min="1" max="100"/>
+					
+					<gd:inputDatum value="#{campaignMgr.curItem.start}" 
+						label="#{msgs.campaign_start_label}" 
+						title="#{msgs.campaign_start_title}" 
+						validatorMsg="#{msgs.campaign_start_error}"/>
+											
+					<gd:inputDatum value="#{campaignMgr.curItem.end}"  
+						label="#{msgs.campaign_end_label}" 
+						title="#{msgs.campaign_end_title}"
+						validatorMsg="#{msgs.campaign_end_error}"/>					
+					
+					<gd:inputNote mgr="#{campaignMgr}"
+						label="#{msgs.campaign_note_label}" 
+						title="#{msgs.campaign_note_title}" />
+					
+					<gd:savecancel mgr="#{campaignMgr}"/>
+					
+				</h:form>
+								
+		</ui:define>
+		
+	</ui:composition>		
+				
+</html>

@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<cc:interface>
+		<cc:attribute name="label" default="Deskriptor"/>
+		<cc:attribute name="title" default="Bitte wählen Sie einen Descriptor aus."/>
+		<cc:attribute name="field" default="descriptor"/>
+		<cc:attribute name="mgr" required="true"/>
+		<cc:attribute name="category" required="true"/>
+	</cc:interface>
+	<cc:implementation>		
+		<div>
+			<h:outputLabel for="descriptor" value="#{cc.attrs.label}" title="#{cc.attrs.title}" styleClass="label"/>
+			<h:selectOneMenu id="descriptor" value="#{cc.attrs.mgr.curItem[cc.attrs.field]}" styleClass="entry selectDescriptor" converter="#{descriptorMgr}">
+				<f:selectItem itemLabel="_" noSelectionOption="true"/>								
+				<f:selectItems value="#{descriptorMgr.getItemsByCategory(cc.attrs.category)}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>
+			</h:selectOneMenu>
+			<h:message for="descriptor" />
+		</div>
+	</cc:implementation>
+</ui:composition>

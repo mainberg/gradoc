@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context displayName="Grabungsdokumentation gradoc Juni-Version" path="/juni">
+    
+  <Resource auth="Container" 
+       driverClassName="com.mysql.jdbc.Driver" 
+       maxActive="100" 
+       maxIdle="30" 
+       maxWait="10000" 
+       name="jdbc/gradocDb" 
+       password="pw_juni" 
+       type="javax.sql.DataSource" 
+       url="jdbc:mysql://localhost:3306/juni?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true" 
+       username="juni"/>
+       
+   <!--  Realm className="org.apache.catalina.realm.JDBCRealm"
+      driverName="com.mysql.jdbc.Driver"
+   connectionURL="jdbc:mysql://localhost:3306/juni?user=juni&amp;password=pw_juni"
+       userTable="bearbeiter" userNameCol="username" userCredCol="password"
+   userRoleTable="rollen" roleNameCol="rolle"/ -->
+   
+   <!-- Turn off session serialization -->
+    <Manager className="org.apache.catalina.session.PersistentManager"
+      debug="0" distributable="false" saveOnRestart="false">
+        <Store className="org.apache.catalina.session.FileStore"/>
+    </Manager>
+  
+</Context>

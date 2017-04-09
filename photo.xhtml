@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:gd="http://xmlns.jcp.org/jsf/composite/gradoc">
+      
+    <ui:composition template="/resources/gradoc.xhtml">
+		
+			<ui:define name="metadata">
+				<f:metadata>
+					<f:viewParam name="id" value="#{photoMgr.id}" />
+					<f:viewAction action="#{photoMgr.load}"/>
+				</f:metadata>				
+			</ui:define>
+			
+			<ui:define name="styles">
+				<style type="text/css">
+					.nameColumn { width: 100px; }
+					.categoryColumn { width: 100px; }
+					.photographerColumn { width: 100px; }
+					.rightsColumn { width: 100px; }
+				</style>
+			</ui:define>
+			
+			<ui:define name="title">
+				#{msgs.photo_title}
+			</ui:define>
+		
+			<ui:define name="records">						
+				
+				<h:dataTable id="items" value="#{photoMgr.items}" var="item"  rules="cols" headerClass="caption"
+					frame="border" styleClass="records" columnClasses="editColumn,nameColumn,categoryColumn,dateColumn,photographerColumn,rightsColumn,noteColumn">
+					<h:column>
+						<f:facet name="header">
+							&#160;
+						</f:facet>
+						<h:button outcome="#{photoMgr.form}" image="/img/edit.gif"><f:param name="id" value="#{item.id}" /></h:button>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.photo_name_header}" />
+						</f:facet>
+						<h:outputText value="#{item.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.photo_descriptor_header}" />
+						</f:facet>
+						<h:outputText value="#{item.descriptor.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.photo_location_header}" />
+						</f:facet>
+						<h:outputText value="#{item.location.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.photo_date_header}" />
+						</f:facet>
+						<h:outputText value="#{item.date}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.photo_photographer_header}" />
+						</f:facet>
+						<h:outputText value="#{item.photographer}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.photo_rights_header}" />
+						</f:facet>
+						<h:outputText value="#{item.rights}" />
+					</h:column>				
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.photo_note_header}" />
+						</f:facet>
+						<h:outputText value="#{fn:substring(item.note, 0, 50)}..." />
+					</h:column>				
+				</h:dataTable>
+				
+				<h:form>
+					<fieldset>				
+						<legend>Export von Photos</legend>
+						<h:outputLabel for="exportFormat" value="Exportformat" />&#160;
+						<h:selectOneMenu id="exportFormat" value="#{photoMgr.exportFormat}" styleClass="selectDescriptor" >&#160;
+							<f:selectItem itemValue="photo/standard.xsl" itemLabel="Standard" />
+						</h:selectOneMenu>
+						<h:commandButton action="#{photoMgr.export}" value="Export"/>
+					</fieldset>
+				</h:form>
+				
+			</ui:define>
+			
+			<ui:define name="formular">	
+				
+				<h:form id="formular">					
+							
+					<gd:inputName mgr="#{photoMgr}" 
+						label="#{msgs.photo_name_label}" 
+						title="#{msgs.photo_name_title}" 
+						validatorMsg="#{msgs.photo_name_error}" 
+						min="1" max="10"/>
+											
+					<gd:inputDatum value="#{photoMgr.curItem.date}"
+						label="#{msgs.photo_date_label}" 
+						title="#{msgs.photo_date_title}"
+						validatorMsg="#{msgs.photo_date_error}"/>
+									
+					<gd:chooseDescriptor mgr="#{photoMgr}" category="kontext" 
+						label="#{msgs.photo_descriptor_label}"
+						title="#{msgs.photo_descriptor_title}" />
+						
+					<gd:chooseLocation mgr="#{photoMgr}"  
+						label="#{msgs.photo_location_label}"
+						title="#{msgs.photo_location_title}" />	
+					
+					<div>
+						<h:outputLabel for="photographer" styleClass="label"
+							value="#{msgs.photo_photographer_label}" 
+							title="#{msgs.photo_photographer_title}" />
+						<h:inputText id="photographer" value="#{photoMgr.curItem.photographer}" 
+							validatorMessage="#{msgs.photo_photographer_error}" styleClass="entry inputNummer">
+							<f:validateLength minimum="3" maximum="30"/>
+						</h:inputText>
+						<h:message for="photographer" />
+					</div>
+					
+					<div>
+						<h:outputLabel for="rights" styleClass="label"
+							value="#{msgs.photo_rights_label}"
+							title="#{msgs.photo_rights_title}" />
+						<h:inputText id="rights" value="#{photoMgr.curItem.rights}" 
+							validatorMessage="#{msgs.photo_photographer_label}" styleClass="entry inputNummer">
+							<f:validateLength minimum="3" maximum="30"/>
+						</h:inputText>
+						<h:message for="rights" />	
+					</div>	
+					
+					<gd:inputNote mgr="#{photoMgr}"
+						label="#{msgs.photo_note_label}" 
+						title="#{msgs.photo_note_title}" />
+					
+					<gd:buttons mgr="#{photoMgr}" view="photo"/>			
+																	
+				</h:form>
+			
+			</ui:define>
+		
+	</ui:composition>  
+    
+</html>
